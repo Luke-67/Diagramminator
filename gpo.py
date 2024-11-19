@@ -10,24 +10,24 @@ load_dotenv()
 client = OpenAI(api_key = os.getenv('OPENAI_API_KEY'))
 
 def get_next_folder_number(base_path):
-    """
-    Find the next available numbered folder in the risultati directory.
-    """
+
+    #controlla il prossimo numero da mettere al nome della cartella
+
     try:
-        # Use the script's directory, not the current working directory
+        # IMPORTANTE USA LA DIRECTORY DELLO SCRIPT
         script_dir = os.path.dirname(os.path.abspath(__file__))
         base_path = os.path.join(script_dir, "risultati")
         
-        # Create the base directory if it doesn't exist
+        # crea la cartella risultati se non esiste
         os.makedirs(base_path, exist_ok=True)
         
-        # Get existing folders and find the next number
+        # controlla i nomi delle cartelle esistenti
         existing_folders = [f for f in os.listdir(base_path) if os.path.isdir(os.path.join(base_path, f))]
         
         if not existing_folders:
             return "001"
         
-        # Find the highest numbered folder and increment
+        # aggiunge +1 al numero di cartella più altro
         existing_numbers = [int(folder) for folder in existing_folders if folder.isdigit()]
         next_number = max(existing_numbers) + 1 if existing_numbers else 1
         
@@ -77,7 +77,7 @@ def save_and_render_dot(diagram_text, output_path, summary_text):
             file.write(diagram_text)
         
         # Save the summary text to a .txt file
-        summary_file = os.path.join(output_path, "summary.txt")
+        summary_file = os.path.join(output_path, "relazione.txt")
         with open(summary_file, "w", encoding='utf-8') as file:
             file.write(summary_text)
         
@@ -139,7 +139,7 @@ def on_submit():
             # Optionally, show the rendered image or proceed further
             pass
     else:
-        messagebox.showerror("Error", diagram)
+        messagebox.showerror("Errore", diagram)
 # Create the GUI window
 root = tk.Tk()
 root.title("Diagramm-inator di Luca")
