@@ -1,7 +1,7 @@
 # Diagramminator
 Programma per realizzare diagrammi di imprese/organizzazioni perché mi annoiavo di studiare GPO
 ## Requisiti!!
- - un'api di OpenAI
+ - una chiave api di OpenAI
  - Graphviz
  - Windows, duh
 
