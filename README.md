@@ -13,7 +13,7 @@ Programma per realizzare diagrammi di imprese/organizzazioni perché mi annoiavo
 - impacchettare dipendenze
 - aggiungere configurazione tramite file
 
-##ISTRUZIONI:
+## ISTRUZIONI:
 > non sono riuscito ancora ad includere le dipendenze quindi servono
 1. metti tutto in una cartella
 2. installa le dipendenze tramite pip:
