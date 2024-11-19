@@ -7,8 +7,6 @@ Programma per realizzare diagrammi di imprese/organizzazioni perché mi annoiavo
 
 ## TODO:
 - aggiungere supporto a linux
-- aggiungere supporto a LLAMA
-- aggiungere GUI
+- aggiungere supporto a LLAMA (quindi modificare endpoint e key da GUI o file .config)
 - aggiungere possibilità di modificare PATH da GUI e location output
-- aggiungere tanta roba che manca
-- pulire
+- pulireun pò
