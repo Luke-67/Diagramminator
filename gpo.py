@@ -4,9 +4,38 @@ import tkinter as tk
 from tkinter import messagebox
 from openai import OpenAI
 from dotenv import load_dotenv
+
 load_dotenv()
 # Client initialization
 client = OpenAI(api_key = os.getenv('OPENAI_API_KEY'))
+
+def get_next_folder_number(base_path):
+    """
+    Find the next available numbered folder in the risultati directory.
+    """
+    try:
+        # Use the script's directory, not the current working directory
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        base_path = os.path.join(script_dir, "risultati")
+        
+        # Create the base directory if it doesn't exist
+        os.makedirs(base_path, exist_ok=True)
+        
+        # Get existing folders and find the next number
+        existing_folders = [f for f in os.listdir(base_path) if os.path.isdir(os.path.join(base_path, f))]
+        
+        if not existing_folders:
+            return "001"
+        
+        # Find the highest numbered folder and increment
+        existing_numbers = [int(folder) for folder in existing_folders if folder.isdigit()]
+        next_number = max(existing_numbers) + 1 if existing_numbers else 1
+        
+        return f"{next_number:03d}"
+    
+    except Exception as e:
+        messagebox.showerror("Error", f"Errore nella creazione della cartella: {e}")
+        return "001"
 
 def generate_dot_diagram(structure, activity):
     prompt = f"""
@@ -37,17 +66,23 @@ def generate_dot_diagram(structure, activity):
     except Exception as e:
         return f"Si è verificato un errore: {e}"
 
-def save_and_render_dot(diagram_text, output_image_path, summary_text):
+def save_and_render_dot(diagram_text, output_path, summary_text):
     try:
+        # Ensure the output directory exists
+        os.makedirs(output_path, exist_ok=True)
+        
         # Write the diagram to a .dot file
-        dot_file = os.path.join(os.getcwd(), "diagramma.dot")
+        dot_file = os.path.join(output_path, "diagramma.dot")
         with open(dot_file, "w", encoding='utf-8') as file:
             file.write(diagram_text)
         
         # Save the summary text to a .txt file
-        summary_file = os.path.join(os.getcwd(), "summary.txt")
+        summary_file = os.path.join(output_path, "summary.txt")
         with open(summary_file, "w", encoding='utf-8') as file:
             file.write(summary_text)
+        
+        # Define output image path
+        output_image_path = os.path.join(output_path, "diagramma.png")
         
         # Use fixed Graphviz path for rendering
         dot_path = r"C:\Program Files\Graphviz\bin\dot.exe"
@@ -80,23 +115,31 @@ def on_submit():
     structure = entry_structure.get()
     activity = entry_activity.get()
 
+    # Get the script's directory
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # Create the base risultati directory in the script's folder
+    risultati_base = os.path.join(script_dir, "risultati")
+
     # Generate the diagram
     diagram = generate_dot_diagram(structure, activity)
 
     if not diagram.startswith("Si è verificato un errore"):
-        # Define output image path
-        output_image_path = os.path.join(os.getcwd(), "diagramma.png")
+        # Get the next folder number
+        folder_number = get_next_folder_number(risultati_base)
+        
+        # Create the specific numbered output folder
+        output_path = os.path.join(risultati_base, folder_number)
 
         # Generate a simple summary
         summary_text = f"Organigramma di un'azienda con struttura '{structure}' nel settore '{activity}'.\n"
 
         # Save and render the diagram
-        if save_and_render_dot(diagram, output_image_path, summary_text):
+        if save_and_render_dot(diagram, output_path, summary_text):
             # Optionally, show the rendered image or proceed further
             pass
     else:
         messagebox.showerror("Error", diagram)
-
 # Create the GUI window
 root = tk.Tk()
 root.title("Diagramm-inator di Luca")
