@@ -39,3 +39,4 @@ Thumbs.db
 # i miei
 
 *.env
+*.gitignore
